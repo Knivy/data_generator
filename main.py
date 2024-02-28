@@ -1,6 +1,6 @@
-from parts import FakerGenerator
+from parts import MaleFemaleGenerator
 
 if __name__ == '__main__':
-    fk = FakerGenerator()
+    fk = MaleFemaleGenerator()
     for line in fk.generate(10):
         print(line)

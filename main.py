@@ -1,5 +1,5 @@
-from parts import InputDataSource, GeneratorDataSource, FileDataSource
-from parts import CSVFileWriter, XlsxFileWriter, XlsxDataSource
+from modules import InputDataSource, GeneratorDataSource, FileDataSource
+from modules import CSVFileWriter, XlsxFileWriter, XlsxDataSource
 
 if __name__ == '__main__':
     # fk = MaleFemaleGenerator()

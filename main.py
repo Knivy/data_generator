@@ -1,5 +1,5 @@
 from parts import InputDataSource, GeneratorDataSource, FileDataSource
-from parts import CSVFileWriter, XlsxFileWriter
+from parts import CSVFileWriter, XlsxFileWriter, XlsxDataSource
 
 if __name__ == '__main__':
     # fk = MaleFemaleGenerator()
@@ -19,5 +19,7 @@ if __name__ == '__main__':
     # for line in ids.get_data():
     #     print(line)
 
-    ids = GeneratorDataSource().get_data()
+    #ids = GeneratorDataSource().get_data()
+    ids = XlsxDataSource().get_data()
     CSVFileWriter().write_data(ids)
+    #XlsxFileWriter().write_data(ids)

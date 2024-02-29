@@ -1,3 +1,13 @@
+"""Основной модуль программы-упаковщика. 
+
+Тестирование выявило проблемы:
+при записи в zip каждая строка пишется отдельным файлом,
+несколько раз с одинаковым названием. Эти файлы не читаются.
+Запись 7z аварийно останавливается, создавая пустой файл.
+Протестировано не всё, что касается упаковки в архив.
+Генерация, запись в файлы вроде работает.
+"""
+
 from modules import InputDataSource, GeneratorDataSource, FileDataSource
 from modules import Writer
 from modules import CSVFileWriter, XlsxFileWriter, XlsxDataSource, Zipper
@@ -48,3 +58,5 @@ if __name__ == '__main__':
                 wr = CSVFileWriter()
                 wr.write_data(ids)
                 zfile.write_file_7z(wr.filepath)
+    with open('log.txt', 'a', encoding='utf-8') as f:
+        print('Создан архив.', file=f)

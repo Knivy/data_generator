@@ -7,12 +7,15 @@ import aspose.zip as az
 
 
 class Zipper:
+    """Основной класс упаковки в архив."""
 
     def __init__(self):
+        """Получает число строк в одном файле и путь до архива."""
         self.num_lines = self.get_num_lines()
         self.get_path()
 
     def get_num_lines(self):
+        """Получает число строк в файле."""
         while True:
             try:
                 return int(input(
@@ -21,6 +24,7 @@ class Zipper:
                 pass
 
     def get_path(self):
+        """Получает путь до архива."""
         while True:
             self.format = input('Введите формат архива: 7z или zip: ')
             if self.format in ['7z', 'zip']:
@@ -36,6 +40,7 @@ class Zipper:
         self.path = zip_path
 
     def write_xlsx(self, file_path: Optional[str] = None):
+        """Пишет xlsx."""
         if not file_path:
             while True:
                 file_path = input('Введите путь к файлу xlsx: ')
@@ -54,6 +59,7 @@ class Zipper:
                 zfile.save(self.path)
 
     def write_gen_zip(self, data: Generator[list[str], None, None]):
+        """Пишет zip c поданного генератора списка строк."""
         while True:
             file_name = input('Введите имя для файла в архиве: ')
             if (not file_name.endswith('.csv')
@@ -65,20 +71,27 @@ class Zipper:
         count = 0
         file_count = 0
         while True:
+            f_name = (file_name.split('.')[0] + str(file_count) + '.'
+                      + file_name.split('.')[-1])
             with zf.ZipFile(self.path, mode='a') as zfile:
                 for line in data:
-                    f_name = (file_name.split('.')[0] + str(file_count)
-                              + file_name.split('.')[-1])
-                    zfile.writestr(f_name, sep.join(line))
+                    try:
+                        label: str | zf.ZipInfo = zfile.getinfo(f_name)
+                    except KeyError:
+                        label = f_name
+                    zfile.writestr(label, sep.join(line))
                     count += 1
                     if count == self.num_lines:
                         file_count += 1
                         count = 0
                         break
+                    else:
+                        continue
                 else:
                     break
 
     def write_file_7z(self, file_path: Optional[str] = None):
+        """Пишет 7z с поданного файла."""
         if not file_path:
             while True:
                 file_path = input('Введите путь к файлу csv/txt: ')

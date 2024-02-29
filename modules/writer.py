@@ -53,7 +53,7 @@ class XlsxFileWriter(Writer):
     def write_data(self, data: Generator[list[str], None, None]):
         workbook = xlsxwriter.Workbook(self.filepath)
         worksheet = workbook.add_worksheet()
-        i = 0 
+        i = 0
         for line in data:
             worksheet.write_row(i, 0, line)
             i += 1

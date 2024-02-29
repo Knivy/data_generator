@@ -1,25 +1,50 @@
 from modules import InputDataSource, GeneratorDataSource, FileDataSource
-from modules import CSVFileWriter, XlsxFileWriter, XlsxDataSource
+from modules import Writer
+from modules import CSVFileWriter, XlsxFileWriter, XlsxDataSource, Zipper
 
 if __name__ == '__main__':
-    # fk = MaleFemaleGenerator()
-    # for line in fk.generate(10):
-    #     print(line)
-
-    # ids = InputDataSource()
-    # for line in ids.get_data():
-    #     print(line)
-
-    # ids = GeneratorDataSource()
-    # for line in ids.get_data():
-    #     print(line)
-
-    # ids = FileDataSource()
-    # print(type(ids.get_data()))
-    # for line in ids.get_data():
-    #     print(line)
-
-    #ids = GeneratorDataSource().get_data()
-    ids = XlsxDataSource().get_data()
-    CSVFileWriter().write_data(ids)
-    #XlsxFileWriter().write_data(ids)
+    print('Добро пожаловать в упаковщик архивов!')
+    while True:
+        user_choice = input("""Выберите:
+                            1 - ввести данные с клавиатуры,
+                            2 - взять данные из файла txt/csv,
+                            3 - взять данные из файла xlsx,
+                            4 - сгенерировать данные:
+                            """)
+        if user_choice not in ['1', '2', '3', '4']:
+            print('Неверный ввод.')
+        else:
+            break
+    # Отдает данные построчно списками строк.
+    match user_choice:
+        case '1':
+            ids = InputDataSource().get_data()
+        case '2':
+            ids = FileDataSource().get_data()
+        case '3':
+            ids = XlsxDataSource().get_data()
+        case '4':
+            ids = GeneratorDataSource().get_data()
+    while True:
+        user_choice = input("""Выберите формат выходных данных:
+                            1 - xlsx,
+                            2 - csv,
+                            3 - txt:
+                            """)
+        if user_choice not in ['1', '2', '3']:
+            print('Неверный ввод.')
+        else:
+            break
+    zfile = Zipper()
+    match user_choice:
+        case '1':  # xlsx пишет сперва файл, причем одним куском.
+            wr: Writer = XlsxFileWriter()
+            wr.write_data(ids)
+            zfile.write_xlsx(wr.filepath)
+        case _:  # csv/txt
+            if zfile.format == 'zip':   # может писать по частям, без файла.
+                zfile.write_gen_zip(ids)
+            else:  # 7z пишет сперва файл и не по частям.
+                wr = CSVFileWriter()
+                wr.write_data(ids)
+                zfile.write_file_7z(wr.filepath)

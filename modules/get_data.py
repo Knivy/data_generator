@@ -100,7 +100,7 @@ class XlsxDataSource(FileDataSource):
 class XlsDataSource(FileDataSource):
     """
     Данные из xls-файла.
-    
+
     Не тестировалось, так как под Линуксом нет офиса.
     """
 

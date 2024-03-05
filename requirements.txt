@@ -1,0 +1,8 @@
+aspose-zip==24.2.0
+et-xmlfile==1.1.0
+Faker==23.3.0
+openpyxl==3.1.2
+python-dateutil==2.8.2
+six==1.16.0
+xlrd==2.0.1
+XlsxWriter==3.2.0

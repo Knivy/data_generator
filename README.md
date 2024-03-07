@@ -21,3 +21,4 @@ Faker сильно медленней, чем Mimesis
 Для записи по частям надо BitesIO
 gen_data > generate_line
 interface
+MaleFemaleGenerator > MaleFemaleFakerGenerator

@@ -34,7 +34,7 @@ class BaseGenerator:
         self.format: str = format
 
     def get_language(self, language: str = default_language) -> None:
-        """Получает настройку языка."""
+        """Получает настройку языка и создает объект для движка."""
         raise NotImplementedError('Метод должен быть переопреден.')
 
     def generate_line(self) -> dict:

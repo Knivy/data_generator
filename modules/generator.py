@@ -110,8 +110,8 @@ class MimesisGenerator(BaseGenerator):
             RussiaSpecProvider.Meta.name = 'rus'
             self.mimesis.add_provider(RussiaSpecProvider)
         else:
-            self.language: Locale = Locale.EN
-            self.mimesis: Generic = Generic(locale=self.language)
+            self.language = Locale.EN
+            self.mimesis = Generic(locale=self.language)
 
 
 class MaleFemaleMimesisGenerator(MimesisGenerator):

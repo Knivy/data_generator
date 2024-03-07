@@ -110,7 +110,8 @@ class MimesisGenerator(BaseGenerator):
             RussiaSpecProvider.Meta.name = 'rus'
             self.mimesis.add_provider(RussiaSpecProvider)
         else:
-            raise NotImplementedError('Поддерживается только русский язык.')
+            self.language: Locale = Locale.EN
+            self.mimesis: Generic = Generic(locale=self.language)
 
 
 class MaleFemaleMimesisGenerator(MimesisGenerator):
@@ -131,11 +132,7 @@ class MaleFemaleMimesisGenerator(MimesisGenerator):
         format_dict: dict = {
             'Фамилия': self.mimesis.last_name(gender),
             'Имя': self.mimesis.first_name(gender),
-            'Отчество': self.mimesis.rus.patronymic(gender),
             'Пол': 'мужской' if format == 'male' else 'женский',
-            'ИНН': self.mimesis.rus.inn(),
-            'Паспорт': self.mimesis.rus.series_and_number(),
-            'СНИЛС': self.mimesis.rus.snils(),
             'Индекс': self.mimesis.postal_code(),
             'Название города': self.mimesis.city(),
             'Дата рождения': self.mimesis.birthdate(),
@@ -145,4 +142,13 @@ class MaleFemaleMimesisGenerator(MimesisGenerator):
             'Номер телефона': self.mimesis.phone_number(),
             'Почта': self.mimesis.email(unique=True),
         }
+        if self.language == Locale.RU:
+            format_dict.update(
+                {
+                    'Отчество': self.mimesis.rus.patronymic(gender),
+                    'ИНН': self.mimesis.rus.inn(),
+                    'Паспорт': self.mimesis.rus.series_and_number(),
+                    'СНИЛС': self.mimesis.rus.snils(),
+                }
+            )
         return format_dict

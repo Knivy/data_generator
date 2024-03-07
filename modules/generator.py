@@ -121,6 +121,7 @@ class MaleFemaleMimesisGenerator(MimesisGenerator):
     def generate_line(self) -> dict:
         """
         Генерирует одну строку в виде словаря по заданному формату.
+        Доступны варианты: мужские данные, женские, вперемешку.
         """
         if self.format not in self.format_styles:
             format: str = choice(self.format_styles)

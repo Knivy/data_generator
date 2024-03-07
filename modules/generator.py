@@ -21,6 +21,7 @@ class BaseGenerator:
     default_language: str = 'русский'  # На каком языке.
     header = True  # Нужна ли строка заголовков.
     default_format: str = 'general'  # Формат по умолчанию.
+    format_styles = ('мужские', 'женские')  # Варианты формата данных.
 
     def __init__(self, language: str = default_language,
                  format: str = default_format):
@@ -70,7 +71,6 @@ class FakerGenerator(BaseGenerator):
 
 class MaleFemaleFakerGenerator(FakerGenerator):
     """Задает определенный формат генерируемых данных."""
-    format_styles = ('male', 'female')
 
     def generate_line(self) -> dict:
         """
@@ -116,8 +116,6 @@ class MimesisGenerator(BaseGenerator):
 
 class MaleFemaleMimesisGenerator(MimesisGenerator):
     """Задает определенный формат генерируемых данных."""
-
-    format_styles = ('male', 'female')
 
     def generate_line(self) -> dict:
         """

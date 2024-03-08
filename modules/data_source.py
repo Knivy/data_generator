@@ -34,7 +34,7 @@ class InputDataSource(BaseDataSource):
 
 
 class GeneratorDataSource(BaseDataSource):
-    """Данные от генератора синтетических данных Faker."""
+    """Данные от генератора синтетических данных."""
 
     default_generator_type = 'Mimesis'
 

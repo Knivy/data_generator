@@ -127,7 +127,7 @@ class XlsDataSource(FileDataSource):
     file_formats = ('xls',)
     default_sheet_number = 0
 
-    def __init__(self, file_path: str,,
+    def __init__(self, file_path: str,
                  num_lines: int = BaseDataSource.default_num_lines,
                  sheet_number: int = default_sheet_number):
         """Получает настройки."""

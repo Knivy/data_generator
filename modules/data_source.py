@@ -1,7 +1,7 @@
 """Модуль, получающий данные и отдающий построчно списками строк."""
 
-import xlrd
-import openpyxl
+import xlrd  # type: ignore[import-untyped]
+import openpyxl  # type: ignore[import-untyped]
 
 from .generator import MaleFemaleFakerGenerator, MaleFemaleMimesisGenerator
 from .generator import BaseGenerator

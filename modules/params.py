@@ -9,7 +9,6 @@ from .data_source import BaseDataSource, CsvDataSource, InputDataSource
 from .data_source import GeneratorDataSource, XlsDataSource, XlsxDataSource
 from .generator import BaseGenerator
 from .writer import CSVFileWriter, Writer, XlsxFileWriter
-from .zipper import Zipper
 
 
 class ParamsObject:
@@ -17,8 +16,7 @@ class ParamsObject:
 
     data_source: BaseDataSource
     num_lines: int = BaseDataSource.default_num_lines
-    data_destination: Writer | Zipper
-    destination_type: str
+    data_destination: Writer
 
     def __init__(self):
         print('Добро пожаловать в упаковщик архивов!')

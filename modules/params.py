@@ -16,7 +16,8 @@ class ParamsObject:
 
     data_source: BaseDataSource
     num_lines: int = BaseDataSource.default_num_lines
-    data_destination: Writer
+    data_writer: Writer
+    destination_type: str = 'file'
 
     def __init__(self):
         print('Добро пожаловать в упаковщик архивов!')
@@ -166,17 +167,15 @@ class ParamsObject:
                                        input_file=False)
         separator: str = (input('Введите символ разделителя на запись: ') or
                           CSVFileWriter.default_separator)
-        self.data_destination = CSVFileWriter(
+        self.data_writer = CSVFileWriter(
             file_path=file_path,
             separator=separator,
         )
-        self.destination_type = 'Writer'
 
     def write_xlsx(self) -> None:
         """Создает объект записи xlsx."""
         file_path = self.get_file_path(XlsxFileWriter.file_formats,
                                        input_file=False)
-        self.data_destination = XlsxFileWriter(
+        self.data_writer = XlsxFileWriter(
             file_path=file_path,
         )
-        self.destination_type = 'Writer'

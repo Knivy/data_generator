@@ -1,4 +1,4 @@
-from .get_data import InputDataSource, GeneratorDataSource, FileDataSource
-from .get_data import XlsxDataSource
+from .data_source import InputDataSource, GeneratorDataSource, FileDataSource
+from .data_source import XlsxDataSource
 from .writer import CSVFileWriter, XlsxFileWriter, Writer
 from .zipper import Zipper

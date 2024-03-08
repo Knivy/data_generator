@@ -1,5 +1,5 @@
 """
-Генерирует синтетические данные и отдает в виде генератора строк.
+Генерирует синтетические данные и отдает в виде генератора списков строк.
 
 Faker медленней, чем Mimesis. Здесь он на каждой строке выбирает, сгенерировать
 данные мужские или женские.
@@ -13,11 +13,13 @@ from mimesis.locales import Locale
 from mimesis.builtins import RussiaSpecProvider
 from mimesis.enums import Gender
 
+from .data_source import BaseDataSource
+
 
 class BaseGenerator:
     """Базовый класс генератора данных."""
 
-    default_num_lines: int = 500_000  # Сколько нужно строк.
+    default_num_lines: int = BaseDataSource.default_num_lines  # Сколько строк.
     default_language: str = 'русский'  # На каком языке.
     header = True  # Нужна ли строка заголовков.
     default_format: str = 'general'  # Формат по умолчанию.

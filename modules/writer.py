@@ -2,65 +2,51 @@
 Модуль для записи данных в файл.
 
 Получает генератор списков строк и пишет в нужный формат файла.
-Нужен для случаев, когда я не знаю, как писать сразу в архив.
 """
 
 from typing import Generator
-import os
-import xlsxwriter
+
+import xlsxwriter  # type: ignore[import-untyped]
 
 
 class Writer:
     """Базовый класс записи файлов."""
 
-    file_formats: list = ['']
+    file_formats: tuple
 
-    def __init__(self):
+    def __init__(self, file_path: str):
         """Получает путь к файлу нужного формата."""
-        while True:
-            self.filepath = self.get_filepath()
-            flag = False
-            for format in self.file_formats:
-                if self.filepath.endswith(format):
-                    flag = True
-                    break
-            if flag:
-                break
+        self.file_path = file_path
 
-    def write_data(self, data: Generator[list[str], None, None]):
+    def write_data(self, data: Generator):
         """Запись файла."""
         raise NotImplementedError('Этот метод должен быть переопределен.')
-
-    def get_filepath(self) -> str:
-        """Получение пути к файлу."""
-        while True:
-            filepath = input('Введите путь к файлу на запись: ')
-            if not filepath or os.path.exists(filepath):
-                print('Введите другой путь.')
-            else:
-                break
-        return filepath
 
 
 class CSVFileWriter(Writer):
     """Запись csv/txt."""
-    file_formats = ['csv', 'txt']
 
-    def write_data(self, data: Generator[list[str], None, None]):
+    file_formats = ('csv', 'txt')
+    default_separator: str = ','
+
+    def __init__(self, file_path: str, separator: str = default_separator):
+        super().__init__(file_path)
+        self.separator = separator
+
+    def write_data(self, data: Generator):
         """Запись файла."""
-        sep = input('Введите разделитель: ') or ','
-        with open(self.filepath, 'w', encoding='utf-8') as f:
+        with open(self.file_path, 'w', encoding='utf-8') as f:
             for line in data:
-                print(sep.join(line), file=f)
+                print(self.separator.join(line), file=f)
 
 
 class XlsxFileWriter(Writer):
     """Запись xlsx."""
-    file_formats = ['xlsx']
+    file_formats = ('xlsx',)
 
-    def write_data(self, data: Generator[list[str], None, None]):
+    def write_data(self, data: Generator):
         """Запись файла."""
-        workbook = xlsxwriter.Workbook(self.filepath)
+        workbook = xlsxwriter.Workbook(self.file_path)
         worksheet = workbook.add_worksheet()
         i = 0
         for line in data:

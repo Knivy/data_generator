@@ -13,17 +13,15 @@ from mimesis.locales import Locale
 from mimesis.builtins import RussiaSpecProvider
 from mimesis.enums import Gender
 
-from .data_source import BaseDataSource
-
 
 class BaseGenerator:
     """Базовый класс генератора данных."""
 
-    default_num_lines: int = BaseDataSource.default_num_lines  # Сколько строк.
     default_language: str = 'русский'  # На каком языке.
     header = True  # Нужна ли строка заголовков.
     default_format: str = 'вперемешку'  # Формат по умолчанию.
     format_styles = ('мужские', 'женские')  # Варианты формата данных.
+    check_format = 'мужские'  # Используется при проверках.
 
     def __init__(self, language: str = default_language,
                  format: str = default_format):
@@ -44,7 +42,7 @@ class BaseGenerator:
         """Генерирует строку данных в виде словаря."""
         raise NotImplementedError('Метод должен быть переопреден.')
 
-    def generate(self, num_lines: int = default_num_lines,
+    def generate(self, num_lines: int,
                  header: bool = header):
         """
         Генерирует данные и отдает построчно в виде списка строк.
@@ -84,11 +82,11 @@ class MaleFemaleFakerGenerator(FakerGenerator):
         else:
             format = self.format
         format_dict: dict = {
-            'Фамилия': self.fake.last_name_male() if format == 'male'
-            else self.fake.last_name_female(),
-            'Имя': self.fake.first_name_male() if format == 'male'
+            'Фамилия': self.fake.last_name_male()
+            if format == self.check_format else self.fake.last_name_female(),
+            'Имя': self.fake.first_name_male() if format == self.check_format
             else self.fake.first_name_female(),
-            'Пол': 'мужской' if format == 'male' else 'женский',
+            'Пол': 'мужской' if format == self.check_format else 'женский',
             'Индекс': self.fake.postcode(),
             'Название города': self.fake.city(),
             'Адрес': self.fake.street_address(),
@@ -128,11 +126,12 @@ class MaleFemaleMimesisGenerator(MimesisGenerator):
             format: str = choice(self.format_styles)
         else:
             format = self.format
-        gender: Gender = Gender.MALE if format == 'male' else Gender.FEMALE
+        gender: Gender = (Gender.MALE if format == self.check_format
+                          else Gender.FEMALE)
         format_dict: dict = {
             'Фамилия': self.mimesis.last_name(gender),
             'Имя': self.mimesis.first_name(gender),
-            'Пол': 'мужской' if format == 'male' else 'женский',
+            'Пол': 'мужской' if format == self.check_format else 'женский',
             'Индекс': self.mimesis.postal_code(),
             'Название города': self.mimesis.city(),
             'Дата рождения': self.mimesis.birthdate(),

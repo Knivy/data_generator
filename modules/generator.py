@@ -22,7 +22,7 @@ class BaseGenerator:
     default_num_lines: int = BaseDataSource.default_num_lines  # Сколько строк.
     default_language: str = 'русский'  # На каком языке.
     header = True  # Нужна ли строка заголовков.
-    default_format: str = 'general'  # Формат по умолчанию.
+    default_format: str = 'вперемешку'  # Формат по умолчанию.
     format_styles = ('мужские', 'женские')  # Варианты формата данных.
 
     def __init__(self, language: str = default_language,

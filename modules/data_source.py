@@ -77,7 +77,7 @@ class FileDataSource(BaseDataSource):
 class CsvDataSource(FileDataSource):
     """Данные из файла csv/txt."""
 
-    file_formats = ('csv', 'txt')
+    file_formats: tuple = ('csv', 'txt')
     default_separator: str = '\t'
 
     def __init__(self, file_path: str,

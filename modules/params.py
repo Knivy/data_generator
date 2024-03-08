@@ -1,32 +1,133 @@
-"""Модуль, собирающий с пользователя все параметры перед запуском основной программы."""
+"""
+Модуль, собирающий с пользователя все параметры перед запуском
+основной программы.
+"""
+
+from .data_source import BaseDataSource, CsvDataSource, InputDataSource
+from .data_source import GeneratorDataSource, XlsDataSource, XlsxDataSource
+from .generator import BaseGenerator
+
 
 class ParamsObject:
-    """Класс, собирающий и хранящий параметры."""
+    """Класс, собирающий и хранящий объекты с параметрами."""
 
-    def get_num_lines(self):
-        """Запрашивает число строк."""
+    data_source: BaseDataSource
+
+    def __init__(self):
+        print('Добро пожаловать в упаковщик архивов!')
+        self.get_data_source()
+
+    def get_data_source(self) -> None:
+        """Получает источник данных."""
+
+        user_choices: dict = {
+             '1': ('ввести данные с клавиатуры', self.get_input),
+             '2': ('взять данные из файла txt/csv', self.get_csv),
+             '3': ('взять данные из файла xlsx', self.get_xlsx),
+             '4': ('взять данные из файла xls', self.get_xls),
+             '5': ('сгенерировать данные', self.get_generate),
+             '6': ('выйти из программы', ParamsObject.exit_program),
+        }
+
         while True:
-            try:
-                num_lines = int(input('Введите число строк: '))
-            except ValueError:
+            choices_list: list = (
+                [' - '.join([key, value[0]])
+                 for key, value in user_choices.items()])
+            choices_string: str = ',\n'.join(choices_list)
+            user_choice = input(f"""Выберите:
+                                {choices_string}:
+                                """)
+            if user_choice not in user_choices.keys():
                 print('Неверный ввод.')
-            if num_lines >= 0:
-                break
             else:
+                break
+        if (user_choices[user_choice][1].__name__
+                != ParamsObject.exit_program.__name__):
+            self.num_lines: int = self.get_num_lines()
+        user_choices[user_choice][1]()
+
+    def get_int(self, prompt: str, default_value: int) -> int:
+        """Запрашивает целое неотрицательное число."""
+        while True:
+            number_str: str = input(prompt)
+            if not number_str:
+                return default_value
+            try:
+                number: int = int(number_str)
+            except ValueError:
+                print('Введите целое число.')
+            if number < 0:
                 print('Введите неотрицательное число.')
-        return num_lines   
-    
+            else:
+                return number
 
-    lang = input('Введите язык (по умолчанию ru_RU): ') or 'ru_RU'
-        format = input('Введите формат male/female/general: ') or 'general'
-    file_path = input('Введите путь к файлу через /: ')
-        sep = input('Введите символ разделителя: ')
-    
-            if file_path.split('.')[-1] not in self.file_formats:
-            raise WrongExtension
+    def get_num_lines(self) -> int:
+        """Запрашивает число строк."""
+        return self.get_int(prompt='Введите число строк: ',
+                            default_value=BaseDataSource.default_num_lines)
 
-class WrongExtension(Exception):
-    """Класс пользовательского исключения при неверном расширении."""
+    def get_input(self):
+        """Создает объект ввода с клавиатуры."""
+        self.data_source = InputDataSource(self.num_lines)
 
-    def __str__(self):
-        return 'Неверное расширение файла.'
+    def get_file_path(self, extensions: tuple, input_file: bool = True) -> str:
+        """Получает путь к файлу."""
+        while True:
+            if input_file:
+                invite: str = 'Введите путь к файлу-источнику через /: '
+            file_path: str = input(invite)
+            if not file_path:
+                print('Это обязательный параметр.')
+            elif file_path.split('.')[-1] not in extensions:
+                print('Неверное расширение файла.')
+            else:
+                return file_path
+
+    def get_csv(self) -> None:
+        """Создает объект ввода из csv."""
+        file_path: str = self.get_file_path(CsvDataSource.file_formats,
+                                            input_file=True)
+        separator: str = (input('Введите символ разделителя: ') or
+                          CsvDataSource.default_separator)
+        self.data_source = CsvDataSource(file_path, self.num_lines, separator)
+
+    def get_xlsx(self) -> None:
+        """Создает объект ввода из xlsx."""
+        file_path: str = self.get_file_path(XlsxDataSource.file_formats,
+                                            input_file=True)
+        self.data_source = XlsxDataSource(file_path, self.num_lines)
+
+    def get_xls(self) -> None:
+        """Создает объект ввода из xls."""
+        file_path: str = self.get_file_path(XlsDataSource.file_formats,
+                                            input_file=True)
+        sheet_number: int = self.get_int(
+            prompt='Введите номер листа в файле: ',
+            default_value=XlsDataSource.default_sheet_number)
+        self.data_source = XlsDataSource(file_path, self.num_lines,
+                                         sheet_number)
+
+    def get_generate(self) -> None:
+        """Создает объект генерации данных."""
+
+        generator_type: str = (input('Выберите генератор (Faker/Mimesis): ') or
+                               GeneratorDataSource.default_generator_type)
+        language: str = (input('Выберите язык (русский/английский): ') or
+                         BaseGenerator.default_language)
+        format: str = (input('Выберите формат (мужские/женские/вперемешку): ')
+                       or BaseGenerator.default_format)
+        header_choice: str = input('Нужна ли строка заголовков (да/нет): ')
+        header = (header_choice == 'да' if header_choice
+                  else BaseGenerator.header)
+        self.data_source = GeneratorDataSource(
+            generator_type=generator_type,
+            language=language,
+            format=format,
+            header=header,
+            num_lines=self.num_lines,
+        )
+
+    @staticmethod
+    def exit_program():
+        """Выходит из программы."""
+        exit()

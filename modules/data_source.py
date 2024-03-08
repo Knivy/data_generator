@@ -50,7 +50,7 @@ class GeneratorDataSource(BaseDataSource):
 
         super().__init__(num_lines)
         self.header = header
-        if generator_type.lower() == 'faker':
+        if generator_type.lower() != self.default_generator_type:
             self.generator: BaseGenerator = MaleFemaleFakerGenerator(language,
                                                                      format)
         else:

@@ -17,7 +17,8 @@ params_object: ParamsObject = ParamsObject()
 
 # Отдает данные построчно списками строк.
 data_source: Generator = params_object.data_source.get_data()
-params_object.data_writer.write_data(data_source)
+if params_object.destination_type == 'file':
+    params_object.data_writer.write_data(data_source)
 
 # zfile = Zipper()
 # match user_choice:
